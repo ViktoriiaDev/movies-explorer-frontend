@@ -1,0 +1,47 @@
+.movies {
+  padding: 60px 70px 80px;
+}
+
+@media screen and (max-width: 768px) {
+  .movies {
+    padding: 80px 30px 80px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .movies {
+    padding: 80px 14px;
+  }
+}
+
+.movies__divider {
+  margin-top: 70px;
+  display: block;
+  height: 1px;
+  background-color: #E8E8E8;
+}
+
+@media screen and (max-width: 768px) {
+  .movies__divider {
+    margin-top: 48px;
+  }
+}
+
+.movies__button-more {
+  margin-top: 50px;
+  width: 100%;
+  height: 36px;
+  background-color: #F9F9F9;
+  border-radius: 6px;
+  border: none;
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 1.25;
+  text-align: center;
+}
+
+@media screen and (max-width: 480px) {
+  .movies__button-more {
+    margin-top: 80px;
+  }
+}

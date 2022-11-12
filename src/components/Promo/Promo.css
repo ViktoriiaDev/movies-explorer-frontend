@@ -1,0 +1,130 @@
+.promo {
+  background-color: #073042;
+  display: flex;
+  padding: 75px 70px 50px;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+@media screen and (max-width: 768px) {
+  .promo {
+  padding: 140px 44px 66px;
+  align-items: center;
+  flex-direction: column-reverse;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .promo {
+  padding: 70px 10px 30px;
+  align-items: center;
+  flex-direction: column-reverse;
+  }
+}
+
+.promo__info {
+  max-width: 640px;
+}
+
+@media screen and (max-width: 768px) {
+  .promo__info {
+    max-width: 680px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 48px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .promo__info {
+    margin-top: 44px;
+  }
+}
+
+.promo__info-title {
+  margin: 0;
+  font-weight: 400;
+  font-size: 50px;
+  line-height: 1.16;
+  color: #fff;
+
+}
+
+@media screen and (max-width: 768px) {
+  .promo__info-title {
+    text-align: center;
+    font-weight: 400;
+    font-size: 40px;
+    line-height: 1.25;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .promo__info-title {
+    font-size: 29px;
+    line-height: 1.27;
+  }
+}
+
+.promo__info-subtitle {
+  margin: 0;
+  font-weight: 400;
+  font-size: 13px;
+  line-height: 1.23;
+  margin-top: 36px;
+  color: #fff;
+  display: block;
+  max-width: 310px;
+  opacity: .5;
+}
+
+@media screen and (max-width: 768px) {
+  .promo__info-subtitle {
+    text-align: center;
+    margin-top: 22px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .promo__info-subtitle {
+    text-align: center;
+    margin-top: 24px;
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .promo__logo {
+    max-width: 210px;
+    max-height: 206px;
+  }
+}
+
+.promo__info-button {
+  border: 1px solid rgba(255, 255, 255, .6);
+  border-radius: 3px;
+  background-color: transparent;
+  margin-top: 146px;
+  color: #fff;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 1.33;
+  padding: 10px 20px;
+  margin-bottom: 25px;
+}
+
+@media screen and (max-width: 768px) {
+  .promo__info-button {
+    margin-top: 102px;
+    margin-bottom: 10px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .promo__info-button {
+    margin-top: 80px;
+    margin-bottom: 0;
+  }
+}

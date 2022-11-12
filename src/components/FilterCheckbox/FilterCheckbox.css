@@ -1,0 +1,48 @@
+.checkbox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.checkbox__toggler {
+  display: flex;
+  align-items: center;
+  width: 36px;
+  height: 20px;
+  position: relative;
+  background-color: #EBEBEB;
+  border-radius: 20px;
+  transition-duration: .3s;
+}
+
+.checkbox__toggler_active {
+  background-color: #2BE080;
+}
+
+.checkbox__dot {
+  display: block;
+  width: 16px;
+  height: 16px;
+  background-color: #F5F5F5;
+  position: absolute;
+  left: 2px;
+  transition-duration: .3s;
+  border-radius: 50%;
+}
+
+.checkbox__dot_active {
+  transform: translateX(100%);
+}
+
+.checkbox__label {
+  font-weight: 400;
+  font-size: 14px;
+  margin-left: 12px;
+}
+
+@media screen and (max-width: 480px) {
+  .checkbox__label  {
+    font-size: 11px;
+    line-height: 1.64;
+  }
+}
