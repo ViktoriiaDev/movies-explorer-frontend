@@ -1,11 +1,12 @@
 import React from "react";
 import { useLocation, Link } from "react-router-dom";
 import headerLogo from "../../images/header-logo.svg";
-import profileIcon from "../../images/profile-icon.svg";
+import menuMobileIcon from "../../images/menu-mobile.svg";
 import Navigation from "../Navigation/Navigation";
+import Account from "../Account/Account";
 import "./Header.css";
 
-const Header = () => {
+const Header = ({ openMobileNavigation }) => {
   const { pathname } = useLocation();
 
   if (!["/movies", "/saved-movies", "/profile", "/"].includes(pathname)) {
@@ -29,13 +30,18 @@ const Header = () => {
         </>
       ) : (
         <>
-          <Navigation />
-          <Link className="header__profile-link" to={"/profile"}>
-            Аккаунт
-            <div className="header__profile-icon">
-              <img alt="Логотип" src={profileIcon} />
-            </div>
-          </Link>
+          <div className="header__desktop">
+            <Navigation />
+            <Account />
+          </div>
+          <div className="header__mobile">
+            <button
+              onClick={openMobileNavigation}
+              className="header__menu-mobile"
+            >
+              <img src={menuMobileIcon} alt="Меню" />
+            </button>
+          </div>
         </>
       )}
     </header>

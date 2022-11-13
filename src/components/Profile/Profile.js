@@ -1,4 +1,6 @@
 import React from "react";
+import { Link } from "react-router-dom";
+
 import "./Profile.css";
 
 const Profile = () => {
@@ -8,18 +10,26 @@ const Profile = () => {
       <div className="profile__edit">
         <form className="profile__edit-form">
           <fieldset className="profile__edit-field">
-            <label className="profile__edit-label" htmlFor="name">Имя</label>
+            <label className="profile__edit-label" htmlFor="name">
+              Имя
+            </label>
             <input name="name" className="profile__edit-input" />
           </fieldset>
-          <div className="profile__divider"/>
+          <div className="profile__divider" />
           <fieldset className="profile__edit-field">
-            <label className="profile__edit-label" htmlFor="email">E-mail</label>
+            <label className="profile__edit-label" htmlFor="email">
+              E-mail
+            </label>
             <input name="email" className="profile__edit-input" />
           </fieldset>
-          <button type="submit" className="profile__edit-submit">Редактировать</button>
+          <button type="submit" className="profile__edit-submit">
+            Редактировать
+          </button>
         </form>
       </div>
-      <button className="profile__logout-button">Выйти из аккаунта</button>
+      <Link to="/">
+        <button className="profile__logout-button">Выйти из аккаунта</button>
+      </Link>
     </section>
   );
 };

@@ -31,15 +31,14 @@ const AboutProject = () => {
           <div className="about-project__progress-bar-backend">
             1 неделя
             <div className="about-project__progress-bar-backend-label">
-                Back-end
-              </div>
+              Back-end
+            </div>
           </div>
-
           <div className="about-project__progress-bar-frontend">
             4 недели
             <div className="about-project__progress-bar-frontend-label">
-            Front-end
-              </div>
+              Front-end
+            </div>
           </div>
         </div>
       </section>

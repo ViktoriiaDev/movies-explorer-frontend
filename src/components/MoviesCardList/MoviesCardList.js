@@ -1,8 +1,8 @@
 import React from "react";
-import "./MoviesCardList.css"
+import "./MoviesCardList.css";
 
 const MoviesCardList = ({ children }) => {
-  return <div className="movies-card-list">{children}</div>
- }
+  return <div className="movies-card-list">{children}</div>;
+};
 
- export default MoviesCardList;
+export default MoviesCardList;

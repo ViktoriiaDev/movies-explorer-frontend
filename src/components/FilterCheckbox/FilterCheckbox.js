@@ -8,7 +8,9 @@ const FilterCheckbox = () => {
     setIsActive(!isActive);
   };
 
-  const checkboxClass = `checkbox__toggler ${isActive ? "checkbox__toggler_active" : ""}`;
+  const checkboxClass = `checkbox__toggler ${
+    isActive ? "checkbox__toggler_active" : ""
+  }`;
   const checkboxDotClass = `checkbox__dot ${
     isActive ? "checkbox__dot_active" : ""
   }`;
@@ -18,9 +20,7 @@ const FilterCheckbox = () => {
       <div className={checkboxClass}>
         <div className={checkboxDotClass} />
       </div>
-      <div className="checkbox__label">
-        Короткометражки
-      </div>
+      <div className="checkbox__label">Короткометражки</div>
     </div>
   );
 };

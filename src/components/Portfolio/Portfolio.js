@@ -9,9 +9,7 @@ const Portfolio = () => {
         <h2 className="portfolio__title">Портфолио</h2>
         <div className="portfolio__links">
           <a className="portfolio__link" href="/">
-            <h3 className="portfolio__link-title" >
-              Статичный сайт
-            </h3>
+            <h3 className="portfolio__link-title">Статичный сайт</h3>
             <img
               className="portfolio__link-icon"
               src={portfolioIcon}
@@ -19,9 +17,7 @@ const Portfolio = () => {
             />
           </a>
           <a className="portfolio__link" href="/">
-            <h3 className="portfolio__link-title">
-              Адаптивный сайт
-            </h3>
+            <h3 className="portfolio__link-title">Адаптивный сайт</h3>
             <img
               className="portfolio__link-icon"
               src={portfolioIcon}
@@ -29,9 +25,7 @@ const Portfolio = () => {
             />
           </a>
           <a className="portfolio__link" href="/">
-            <h3 className="portfolio__link-title">
-              Одностраничное приложение
-            </h3>
+            <h3 className="portfolio__link-title">Одностраничное приложение</h3>
             <img
               className="portfolio__link-icon"
               src={portfolioIcon}

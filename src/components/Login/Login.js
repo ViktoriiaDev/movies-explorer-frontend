@@ -23,14 +23,16 @@ const Login = () => {
           type={"password"}
         />
         <div className="login__button">
-          <Button>Войти</Button>
+          <Link to="/movies">
+            <Button>Войти</Button>
+          </Link>
         </div>
       </form>
       <div className="login__add-info">
         <p className="login__add-text">Ещё не зарегистрированы?</p>
-        <a className="login__add-link" href="/signup">
+        <Link className="login__add-link" to="/signup">
           Регистрация
-        </a>
+        </Link>
       </div>
     </section>
   );

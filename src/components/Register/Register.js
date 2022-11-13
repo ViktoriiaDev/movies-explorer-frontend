@@ -1,6 +1,5 @@
 import React from "react";
 import { Link } from "react-router-dom";
-
 import headerLogo from "../../images/header-logo.svg";
 import Input from "../Input/Input";
 import Button from "../Button/Button";

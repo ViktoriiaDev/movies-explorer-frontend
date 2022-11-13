@@ -53,6 +53,7 @@
   border: 2px solid #fff;
   width: 16px;
   height: 16px;
+  cursor: pointer;
 }
 
 .movies-card__favorite-button_active {
@@ -67,6 +68,7 @@
   height: 16px;
   justify-content: center;
   align-items: center;
+  cursor: pointer;
 }
 
 .movies-card__delete-button-icon {
