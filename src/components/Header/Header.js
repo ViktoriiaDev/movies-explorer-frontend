@@ -38,6 +38,7 @@ const Header = ({ openMobileNavigation }) => {
             <button
               onClick={openMobileNavigation}
               className="header__menu-mobile"
+              type="button"
             >
               <img src={menuMobileIcon} alt="Меню" />
             </button>

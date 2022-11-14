@@ -25,7 +25,7 @@
 }
 
 .movies-card__description {
-
+  width: calc(100% - 20px);
 }
 
 .movies-card__film-name {
@@ -34,6 +34,9 @@
   line-height: 1.23;
   color: #000;
   margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .movies-card__duration {

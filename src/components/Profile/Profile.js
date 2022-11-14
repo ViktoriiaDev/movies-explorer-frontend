@@ -28,7 +28,9 @@ const Profile = () => {
         </form>
       </div>
       <Link to="/">
-        <button className="profile__logout-button">Выйти из аккаунта</button>
+        <button type="button" className="profile__logout-button">
+          Выйти из аккаунта
+        </button>
       </Link>
     </section>
   );

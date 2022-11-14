@@ -20,12 +20,16 @@ const Footer = () => {
           <div className="footer__info-links">
             <a
               className="footer__info-link"
+              target="_blank"
+              rel="noreferrer noopener"
               href="https://practicum.yandex.ru/"
             >
               Яндекс.Практикум
             </a>
             <a
               className="footer__info-link"
+              target="_blank"
+              rel="noreferrer noopener"
               href="https://github.com/ViktoriiaDev"
             >
               Github

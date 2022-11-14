@@ -10,7 +10,7 @@ const MoviesCard = ({
   isDisplayDeleteButton,
 }) => {
   return (
-    <div className="movies-card">
+    <li className="movies-card">
       <div className="movies-card__image-container">
         <img
           className="movies-card__image"
@@ -27,19 +27,21 @@ const MoviesCard = ({
           <button className="movies-card__delete-button">
             <img
               className="movies-card__delete-button-icon"
+              type="button"
               src={deleteIcon}
               alt="Крестик"
             />
           </button>
         ) : (
           <button
+            type="button"
             className={`movies-card__favorite-button ${
               isSaved ? "movies-card__favorite-button_active" : ""
             }`}
           ></button>
         )}
       </div>
-    </div>
+    </li>
   );
 };
 

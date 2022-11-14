@@ -34,6 +34,7 @@
   bottom: 60px;
   transform: translateX(-50%);
   left: 50%;
+  cursor: pointer;
 }
 
 @media screen and (max-width: 480px) {

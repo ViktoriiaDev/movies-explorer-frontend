@@ -26,6 +26,8 @@ const AboutMe = () => {
             </p>
             <a
               className="about-me__info-link"
+              target="_blank"
+              rel="noreferrer noopener"
               href="https://github.com/ViktoriiaDev"
             >
               Github

@@ -53,3 +53,12 @@
   transform: translateY(-50%);
   cursor: pointer;
 }
+
+.search-form__button:focus {
+  opacity: 0.8;
+  outline: none;
+}
+
+.search-form__button:hover {
+  opacity: 0.8;
+}

@@ -84,7 +84,7 @@ const Movies = () => {
           isSaved={false}
         />
       </MoviesCardList>
-      <button className="movies__button-more">Ещё</button>
+      <button className="movies__button-more" type="button">Ещё</button>
     </div>
   );
 };
