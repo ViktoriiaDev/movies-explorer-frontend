@@ -4,3 +4,4 @@
 Дипломная работа в Яндекс.Практикуме.
 
 Ссылка на макет: https://disk.yandex.ru/d/QYqeiV5_Vc3xMA
+Ссылка на приложение: https://frontend.viktoriiadev.nomoredomains.club/
