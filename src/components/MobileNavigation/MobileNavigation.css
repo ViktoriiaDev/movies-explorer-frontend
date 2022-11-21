@@ -48,6 +48,10 @@
   cursor: pointer;
 }
 
+.mobile-menu__close-button:hover {
+  opacity: .7;
+}
+
 @media screen and (max-width: 520px) {
   .mobile-menu__close-button {
     margin-bottom: 105px;
@@ -72,6 +76,10 @@
   font-weight: 600;
   font-size: 18px;
   line-height: 1.8;
+}
+
+.mobile-menu__navigation-link:hover {
+  opacity: .7;
 }
 
 @media screen and (max-width: 520px) {

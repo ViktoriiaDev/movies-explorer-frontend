@@ -12,6 +12,10 @@
   margin-right: 16px;
 }
 
+.navigation__link-logged-in {
+  color: #fff;
+}
+
 .navigation__link:last-of-type {
   margin-right: 0;
 }

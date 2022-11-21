@@ -88,6 +88,10 @@
   padding-right: 0;
 }
 
+.footer__info-link:hover {
+  opacity: .7;
+}
+
 @media screen and (max-width: 480px) {
   .footer__info-link {
     padding-right: 0;

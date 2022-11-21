@@ -1,7 +1,6 @@
 const { NODE_ENV } = process.env;
-const baseUrl = NODE_ENV === 'production' ? 'https://api.diploma.viktoriiadev.nomoredomains.icu' : "http://localhost:3000";
 
-// const baseUrl = "https://api.diploma.viktoriiadev.nomoredomains.icu";
+const baseUrl = "https://api.diploma.viktoriiadev.nomoredomains.icu";
 
 const getToken = () => `Bearer ${localStorage.getItem("jwt")}`;
 
@@ -12,11 +11,11 @@ class MainApi {
   }
 
   async _getResponseData(res) {
+    const result = await res.json();
     if (res.ok) {
-      const result = await res.json();
       return result.data;
     }
-    return Promise.reject(`Ошибка: ${res.status}`);
+    return Promise.reject(result);
   }
 
   getSavedMovies() {
@@ -64,7 +63,7 @@ class MainApi {
     nameRU,
     nameEN,
   }) {
-    return fetch(`${this._baseUrl}/cards`, {
+    return fetch(`${this._baseUrl}/movies`, {
       method: "POST",
       headers: {
         ...this._headers,

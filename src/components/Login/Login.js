@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import { NotificationContext } from '../../contexts/NotificationContext/NotificationContext';
 import { Link, useHistory } from "react-router-dom";
 import headerLogo from "../../images/header-logo.svg";
 import Input from "../Input/Input";
@@ -7,14 +8,28 @@ import { mainApi } from "../../utils/MainApi";
 import "./Login.css";
 
 const Login = ({ setLoggedIn, fetchUser }) => {
+  const { handleAddNote } = useContext(NotificationContext);
   const [values, setValues] = useState({
     email: "",
     password: "",
   });
 
+  const [errors, setErrors] = useState({
+    email: "",
+    password: "",
+  });
+
+  const isValidForm =
+    Object.values(values).every(Boolean) &&
+    !Object.values(errors).some(Boolean);
+
   const { push } = useHistory();
 
   const changeField = (fieldName) => (e) => {
+    setErrors((prev) => ({
+      ...prev,
+      [fieldName]: e.target.validationMessage,
+    }));
     setValues((prevState) => ({
       ...prevState,
       [fieldName]: e.target.value,
@@ -33,6 +48,7 @@ const Login = ({ setLoggedIn, fetchUser }) => {
         }
       })
       .catch((error) => {
+        handleAddNote(error.message)
         console.log(error);
       });
   };
@@ -49,16 +65,21 @@ const Login = ({ setLoggedIn, fetchUser }) => {
         <Input
           onChange={changeField("email")}
           name={"email"}
+          type="email"
           title={"E-mail"}
+          error={errors.email}
         />
         <Input
           onChange={changeField("password")}
           name={"password"}
           title={"Пароль"}
           type={"password"}
+          error={errors.password}
+          minLength={8}
+          maxLength={30}
         />
         <div className="login__button">
-          <Button>Войти</Button>
+          <Button disabled={!isValidForm}>Войти</Button>
         </div>
       </form>
       <div className="login__add-info">

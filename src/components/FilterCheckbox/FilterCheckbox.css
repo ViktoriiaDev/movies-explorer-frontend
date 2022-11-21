@@ -15,6 +15,9 @@
   border-radius: 20px;
   transition-duration: .3s;
 }
+.checkbox__toggler:hover {
+  opacity: .7;
+}
 
 .checkbox__toggler_active {
   background-color: #2BE080;

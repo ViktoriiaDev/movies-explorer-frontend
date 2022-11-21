@@ -15,35 +15,20 @@ import CurrentUserContext from "../../contexts/CurrentUserContext";
 import ProtectedRoute from "../ProtectedRoute/ProtectedRoute";
 import { mainApi } from "../../utils/MainApi";
 import Preloader from "../Preloader/Preloader";
+import NotificationProvider from "../../contexts/NotificationContext/NotificationContext";
 import "./App.css";
 
 const App = () => {
   const { push } = useHistory();
-  const [currentUser, setСurrentUser] = React.useState({
+  const [currentUser, setСurrentUser] = useState({
     name: "",
     email: "",
   });
-  const [loggedIn, setLoggedIn] = React.useState(false);
+  const [loggedIn, setLoggedIn] = useState(false);
   const [isLoading, setLoading] = useState(true);
 
-  React.useEffect(() => {
-    setLoading(true);
-    mainApi
-      .getProfileInfo()
-      .then((result) => {
-        setLoggedIn(true);
-        setСurrentUser(result);
-      })
-      .catch((error) => {
-        setLoggedIn(false);
-        console.log(error);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  }, []);
-
   const fetchUser = () => {
+    setLoading(true);
     mainApi
       .getProfileInfo()
       .then((res) => {
@@ -57,6 +42,9 @@ const App = () => {
         setLoggedIn(false);
         localStorage.removeItem("jwt");
         push("/signin");
+      })
+      .finally(() => {
+        setLoading(false);
       });
   };
 
@@ -75,51 +63,57 @@ const App = () => {
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
-      {isLoading ? (
-        <Preloader />
-      ) : (
-        <>
-          <Header openMobileNavigation={openMobileNavigation} />
-          <div className="app-content">
-            <Switch>
-              <Route path="/signin">
-                <Login setLoggedIn={setLoggedIn} fetchUser={fetchUser} />
-              </Route>
-              <Route path="/signup">
-                <Register />
-              </Route>
-              <ProtectedRoute
-                path="/movies"
-                loggedIn={loggedIn}
-                component={Movies}
-                setСurrentUser={setСurrentUser}
-              />
-              <ProtectedRoute
-                path="/saved-movies"
-                loggedIn={loggedIn}
-                component={SavedMovies}
-                setСurrentUser={setСurrentUser}
-              />
-              <ProtectedRoute
-                path="/profile"
-                loggedIn={loggedIn}
-                component={Profile}
-                setСurrentUser={setСurrentUser}
-              />
-              <Route path="/" exact>
-                <Main />
-              </Route>
-              <Route>
-                <NotFoundPage />
-              </Route>
-            </Switch>
-          </div>
-          <Footer />
-        </>
-      )}
-      {isVisibleMobileMenu && (
-        <MobileNavigation closeMobileNavigation={closeMobileNavigation} />
-      )}
+      <NotificationProvider>
+        {isLoading ? (
+          <Preloader />
+        ) : (
+          <>
+            <Header
+              openMobileNavigation={openMobileNavigation}
+              loggedIn={loggedIn}
+            />
+            <div className="app-content">
+              <Switch>
+                <Route path="/signin">
+                  <Login setLoggedIn={setLoggedIn} fetchUser={fetchUser} />
+                </Route>
+                <Route path="/signup">
+                  <Register setLoggedIn={setLoggedIn} fetchUser={fetchUser} />
+                </Route>
+                <ProtectedRoute
+                  path="/movies"
+                  loggedIn={loggedIn}
+                  component={Movies}
+                  setСurrentUser={setСurrentUser}
+                />
+                <ProtectedRoute
+                  path="/saved-movies"
+                  loggedIn={loggedIn}
+                  component={SavedMovies}
+                  setСurrentUser={setСurrentUser}
+                />
+                <ProtectedRoute
+                  path="/profile"
+                  loggedIn={loggedIn}
+                  setLoggedIn={setLoggedIn}
+                  component={Profile}
+                  setСurrentUser={setСurrentUser}
+                />
+                <Route path="/" exact>
+                  <Main />
+                </Route>
+                <Route>
+                  <NotFoundPage />
+                </Route>
+              </Switch>
+            </div>
+            <Footer />
+          </>
+        )}
+        {isVisibleMobileMenu && (
+          <MobileNavigation closeMobileNavigation={closeMobileNavigation} />
+        )}
+      </NotificationProvider>
     </CurrentUserContext.Provider>
   );
 };

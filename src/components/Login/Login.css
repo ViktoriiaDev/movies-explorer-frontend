@@ -97,6 +97,10 @@
   color: #3456F3;
 }
 
+.login__add-link:hover {
+  opacity: .7;
+}
+
 @media screen and (max-width: 480px) {
   .login__add-link {
     font-size: 12px;

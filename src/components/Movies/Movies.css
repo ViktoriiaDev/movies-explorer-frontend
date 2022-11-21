@@ -41,8 +41,43 @@
   cursor: pointer;
 }
 
+.movies__button-more:hover {
+  opacity: .7;
+}
+
 @media screen and (max-width: 480px) {
   .movies__button-more {
     margin-top: 80px;
+  }
+}
+
+.movies__not-found-error {
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 1.2;
+  text-align: center;
+  margin-top: 50px;
+  color: #A0A0A0;
+}
+
+@media screen and (max-width: 480px) {
+  .movies__not-found-error {
+    font-size: 16px;
+  }
+}
+
+.movies__responce-error {
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 1.2;
+  text-align: center;
+  margin-top: 50px;
+  color: #FF3055;
+}
+
+@media screen and (max-width: 480px) {
+  .movies__responce-error {
+    font-size: 13px;
+    font-weight: 400;
   }
 }

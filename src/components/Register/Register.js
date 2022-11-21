@@ -1,48 +1,55 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Link, useHistory } from "react-router-dom";
 import headerLogo from "../../images/header-logo.svg";
 import Input from "../Input/Input";
 import Button from "../Button/Button";
-import "./Register.css";
 import { mainApi } from "../../utils/MainApi";
+import { NotificationContext } from "../../contexts/NotificationContext/NotificationContext";
+import "./Register.css";
 
-
-const Register = () => {
-
+const Register = ({ setLoggedIn, fetchUser }) => {
+  const { handleAddNote } = useContext(NotificationContext);
   const [values, setValues] = useState({
-    email: '',
-    name: '',
-    password: ''
-  })
+    name: "",
+    email: "",
+    password: "",
+  });
+
+  const [errors, setErrors] = useState({
+    name: "",
+    email: "",
+    password: "",
+  });
+
+  const isValidForm =
+    Object.values(values).every(Boolean) &&
+    !Object.values(errors).some(Boolean);
 
   const { push } = useHistory();
 
-  // const [tooltipState, setTooltipState] = React.useState({
-  //   isOpen: false,
-  //   isSuccess: false
-  // })
-
   const changeField = (fieldName) => (e) => {
-    setValues(prevState => ({
+    setErrors((prev) => ({
+      ...prev,
+      [fieldName]: e.target.validationMessage,
+    }));
+    setValues((prevState) => ({
       ...prevState,
-      [fieldName]: e.target.value
-    }))
-  }
+      [fieldName]: e.target.value,
+    }));
+  };
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
-    mainApi.singup(values)
-    .then((res) => {
-      if (res) {
-        alert('Вы зарегистрированы')
-        push("/signin");
-      }
-    })
-    .catch((error) => {
-      console.log(error)
-    })
-  }
-
+    try {
+      await mainApi.singup(values);
+      await mainApi.singin(values);
+      fetchUser();
+      setLoggedIn(true);
+      push("/movies");
+    } catch (error) {
+      handleAddNote(error.message);
+    }
+  };
 
   return (
     <section className="register">
@@ -53,15 +60,32 @@ const Register = () => {
         <h1 className="register__greeting-title">Добро пожаловать!</h1>
       </div>
       <form onSubmit={onSubmit} className="register__form">
-        <Input onChange={changeField("name")} name={"name"} title={"Имя"} />
-        <Input onChange={changeField("email")} name={"email"} title={"E-mail"} />
-        <Input onChange={changeField("password")}
+        <Input
+          onChange={changeField("name")}
+          name={"name"}
+          title={"Имя"}
+          error={errors.name}
+          minLength={2}
+          maxLength={30}
+        />
+        <Input
+          onChange={changeField("email")}
+          name={"email"}
+          type="email"
+          title={"E-mail"}
+          error={errors.email}
+        />
+        <Input
+          onChange={changeField("password")}
           name={"password"}
           title={"Пароль"}
           type={"password"}
+          error={errors.password}
+          minLength={8}
+          maxLength={30}
         />
         <div className="register__button">
-          <Button>Зарегистрироваться</Button>
+          <Button disabled={!isValidForm}>Зарегистрироваться</Button>
         </div>
       </form>
       <div className="register__add-info">
