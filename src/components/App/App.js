@@ -16,6 +16,7 @@ import ProtectedRoute from "../ProtectedRoute/ProtectedRoute";
 import { mainApi } from "../../utils/MainApi";
 import Preloader from "../Preloader/Preloader";
 import NotificationProvider from "../../contexts/NotificationContext/NotificationContext";
+import UnauthRoute from "../UnauthRoute/UnauthRoute";
 import "./App.css";
 
 const App = () => {
@@ -74,12 +75,20 @@ const App = () => {
             />
             <div className="app-content">
               <Switch>
-                <Route path="/signin">
-                  <Login setLoggedIn={setLoggedIn} fetchUser={fetchUser} />
-                </Route>
-                <Route path="/signup">
-                  <Register setLoggedIn={setLoggedIn} fetchUser={fetchUser} />
-                </Route>
+                <UnauthRoute
+                  path="/signin"
+                  component={Login}
+                  loggedIn={loggedIn}
+                  setLoggedIn={setLoggedIn}
+                  fetchUser={fetchUser}
+                />
+                <UnauthRoute
+                  path="/signup"
+                  component={Register}
+                  loggedIn={loggedIn}
+                  setLoggedIn={setLoggedIn}
+                  fetchUser={fetchUser}
+                />
                 <ProtectedRoute
                   path="/movies"
                   loggedIn={loggedIn}

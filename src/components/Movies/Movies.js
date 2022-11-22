@@ -6,6 +6,9 @@ import Preloader from "../Preloader/Preloader";
 import { moviesApi } from "../../utils/MoviesApi";
 import { mainApi } from "../../utils/MainApi";
 import { NotificationContext } from "../../contexts/NotificationContext/NotificationContext";
+import { filterFilmsByName } from "../../utils/filterFilmsByName";
+import { setLikeFilms } from "../../utils/setLikeFilms";
+
 import "./Movies.css";
 
 const Movies = () => {
@@ -17,15 +20,16 @@ const Movies = () => {
   const [displayCounter, setDisplayCounter] = useState(0);
   const [increase, setIncrease] = useState(0);
   const [savedMovies, setSavedMovies] = useState([]);
+  // const [isActive, setIsActive] = useState(initValue || false);
 
-  React.useEffect(() => {
+  useEffect(() => {
     mainApi
       .getSavedMovies()
       .then((result) => {
         setSavedMovies(result);
-        const savedFilterFilms = localStorage.getItem("savedFilterFilms");
-        if (savedFilterFilms) {
-          const likedFilms = JSON.parse(savedFilterFilms).map((movie) => {
+        const allFilms = localStorage.getItem("allFilms");
+        if (allFilms) {
+          const likedFilms = JSON.parse(allFilms).map((movie) => {
             const findMovie = result.find(
               ({ movieId, _id }) => movieId === movie.id
             );
@@ -50,12 +54,17 @@ const Movies = () => {
       });
   }, []);
 
-  React.useEffect(() => {}, []);
-
   useEffect(() => {
-    const width = window.innerWidth;
+    window.addEventListener("resize", resizeMoviesList);
+    resizeMoviesList();
+    return () => {
+      window.removeEventListener("resize", resizeMoviesList);
+    };
+  }, []);
 
-    if (width <= 768) {
+  const resizeMoviesList = () => {
+    const width = window.innerWidth;
+    if (width < 769) {
       setDisplayCounter(8);
       setIncrease(2);
       return;
@@ -69,57 +78,68 @@ const Movies = () => {
 
     setDisplayCounter(12);
     setIncrease(4);
-  }, []);
+  };
 
   const handleMoreClick = () => {
     setDisplayCounter(displayCounter + increase);
   };
 
-  const fetchFilms = ({ filmName, shortFilm }) => {
+  const fetchFilms = ({ filmName }) => {
     if (filmName === "") {
       handleAddNote("Нужно ввести ключевое слово");
       return;
     }
-    setError(false);
-    setLoading(true);
-    moviesApi
-      .getMovies()
-      .then((result) => {
-        const nameFilms = result.filter(
-          (film) =>
-            film.nameRU.toLowerCase().includes(filmName.toLowerCase()) ||
-            film.nameEN.toLowerCase().includes(filmName.toLowerCase())
-        );
-        const durationFilms = nameFilms.filter((film) =>
-          shortFilm ? film.duration <= 40 : film
-        );
-        setLoading(false);
-        const likedFilms = durationFilms.map((film) => {
-          const findFilm = savedMovies.find(
-            (movie) => movie.movieId === film.id
-          );
-          if (findFilm) {
-            film.isSaved = true;
-            film._id = findFilm._id;
-          } else {
-            film.isSaved = false;
-          }
 
-          return film;
-        });
-        setMovies(likedFilms);
+    localStorage.setItem("savedFilmName", filmName);
 
-        localStorage.setItem("savedFilterFilms", JSON.stringify(likedFilms));
-        localStorage.setItem("savedFilmName", filmName);
-        localStorage.setItem("savedShortFilm", shortFilm);
-      })
-      .catch((error) => {
-        setLoading(false);
-        setMovies(null);
-        setError(true);
-        console.log(error);
-        handleAddNote(error.message);
+    const allFilms = localStorage.getItem("allFilms");
+
+    if (allFilms) {
+      const filterFilms = filterFilmsByName({
+        array: JSON.parse(allFilms),
+        filmName: filmName,
       });
+      const likedFilms = setLikeFilms({
+        filmsArray: filterFilms,
+        likedFilmsArray: savedMovies,
+      });
+      setMovies(likedFilms);
+    } else {
+      setError(false);
+      setLoading(true);
+      moviesApi
+        .getMovies()
+        .then((result) => {
+          localStorage.setItem("allFilms", JSON.stringify(result));
+
+          const filterFilms = filterFilmsByName({
+            array: result,
+            filmName: filmName,
+          });
+
+          const likedFilms = setLikeFilms({
+            filmsArray: filterFilms,
+            likedFilmsArray: savedMovies,
+          });
+          setLoading(false);
+          setMovies(likedFilms);
+        })
+        .catch((error) => {
+          setLoading(false);
+          setMovies(null);
+          setError(true);
+          console.log(error);
+          handleAddNote(error.message);
+        });
+    }
+  };
+
+  const filterCheckBox = (value) => {
+    setValues((prev) => ({
+      ...prev,
+      shortFilm: value,
+    }));
+    localStorage.setItem("savedShortFilm", value);
   };
 
   const handleDeleteLike = (movie) => {
@@ -190,9 +210,19 @@ const Movies = () => {
       });
   };
 
+  const resultFilms = movies && movies.filter((film) =>
+    values.shortFilm ? film.duration <= 40 : film
+  );
+
   return (
     <div className="movies">
-      {values && <SearchForm onSubmit={fetchFilms} values={values} />}
+      {values && (
+        <SearchForm
+          onSubmit={fetchFilms}
+          values={values}
+          filterCheckBox={filterCheckBox}
+        />
+      )}
       <div className="movies__divider" />
       {isLoading ? (
         <Preloader />
@@ -200,7 +230,7 @@ const Movies = () => {
         <>
           {movies && movies.length > 0 && (
             <MoviesCardList>
-              {movies.slice(0, displayCounter).map((movie) => {
+              {resultFilms.slice(0, displayCounter).map((movie) => {
                 return (
                   <MoviesCard
                     trailerLink={movie.trailerLink}
@@ -216,7 +246,7 @@ const Movies = () => {
               })}
             </MoviesCardList>
           )}
-          {movies && movies.length === 0 && (
+          {resultFilms && resultFilms.length === 0 && (
             <>
               <div className="movies__not-found-error">Ничего не найдено</div>
             </>
@@ -230,7 +260,7 @@ const Movies = () => {
               </div>
             </>
           )}
-          {movies && displayCounter < movies.length && (
+          {resultFilms && displayCounter < resultFilms.length && (
             <button
               onClick={handleMoreClick}
               className="movies__button-more"

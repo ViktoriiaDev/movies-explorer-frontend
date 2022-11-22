@@ -6,10 +6,12 @@ import { mainApi } from "../../utils/MainApi";
 import { NotificationContext } from "../../contexts/NotificationContext/NotificationContext";
 import "./SavedMovies.css";
 import Preloader from "../Preloader/Preloader";
+import { filterFilmsByName } from "../../utils/filterFilmsByName";
 
 const SavedMovies = () => {
   const [savedMovies, setSavedMovies] = useState([]);
   const { handleAddNote } = useContext(NotificationContext);
+  const [isShort, filterCheckBox] = useState(false);
   const [isError, setError] = useState(false);
   const [isLoading, setLoading] = useState(false);
 
@@ -42,36 +44,39 @@ const SavedMovies = () => {
       });
   };
 
-  const searchFilms = ({ filmName, shortFilm }) => {
+  const searchFilms = ({ filmName }) => {
     if (filmName === "") {
       handleAddNote("Нужно ввести ключевое слово");
       return;
     }
     setError(false);
-    const nameFilms = savedMovies.filter(
-          (film) =>
-            film.nameRU.toLowerCase().includes(filmName.toLowerCase()) ||
-            film.nameEN.toLowerCase().includes(filmName.toLowerCase())
-        );
-        const durationFilms = nameFilms.filter((film) =>
-          shortFilm ? film.duration <= 40 : film
-        );
-        setSavedMovies(durationFilms);
+    const nameFilms = filterFilmsByName({
+      array: savedMovies,
+      filmName: filmName,
+    });
+    setSavedMovies(nameFilms);
   };
+
+  const resultFilms = savedMovies.filter((film) =>
+    isShort ? film.duration <= 40 : film
+  );
 
   return (
     <div className="saved-movies">
-      <SearchForm onSubmit={searchFilms}/>
+      <SearchForm
+        onSubmit={searchFilms}
+        filterCheckBox={filterCheckBox}
+      />
       <div className="movies__divider" />
       {isLoading ? (
         <Preloader />
       ) : (
         <>
           <MoviesCardList>
-            {savedMovies.map((savedMovie) => {
+            {resultFilms.map((savedMovie) => {
               return (
                 <MoviesCard
-                trailerLink={savedMovie.trailerLink}
+                  trailerLink={savedMovie.trailerLink}
                   key={savedMovie._id}
                   filmName={savedMovie.nameRU}
                   duration={savedMovie.duration}

@@ -5,3 +5,4 @@
 
 Ссылка на макет: https://disk.yandex.ru/d/QYqeiV5_Vc3xMA
 Ссылка на приложение: https://frontend.viktoriiadev.nomoredomains.club/
+Ссылка на пулл-реквест: https://github.com/ViktoriiaDev/movies-explorer-frontend/pull/2

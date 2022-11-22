@@ -3,7 +3,7 @@ import FilterCheckbox from "../FilterCheckbox/FilterCheckbox";
 import searchIcon from "../../images/search-icon.svg";
 import "./SearchForm.css";
 
-const SearchForm = ({ onSubmit, values: initValues }) => {
+const SearchForm = ({ onSubmit, values: initValues, filterCheckBox }) => {
   const [values, setValues] = useState(
     initValues || {
       filmName: "",
@@ -23,6 +23,7 @@ const SearchForm = ({ onSubmit, values: initValues }) => {
       ...prevState,
       shortFilm: value,
     }));
+    filterCheckBox(value)
   };
 
   const hamdleSubmitForm = (e) => {
