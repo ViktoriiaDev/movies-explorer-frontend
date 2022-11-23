@@ -4,7 +4,7 @@ import { Route, Redirect } from "react-router-dom";
 const ProtectedRoute = ({ component: Component, path, ...props }) => {
   return (
     <Route path={path}>
-      {props.loggedIn ? <Component {...props} /> : <Redirect to="/signin" />}
+      {props.loggedIn ? <Component {...props} /> : <Redirect to="/" />}
     </Route>
   );
 };

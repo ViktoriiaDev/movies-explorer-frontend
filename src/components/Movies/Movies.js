@@ -20,7 +20,6 @@ const Movies = () => {
   const [displayCounter, setDisplayCounter] = useState(0);
   const [increase, setIncrease] = useState(0);
   const [savedMovies, setSavedMovies] = useState([]);
-  // const [isActive, setIsActive] = useState(initValue || false);
 
   useEffect(() => {
     mainApi
@@ -28,8 +27,10 @@ const Movies = () => {
       .then((result) => {
         setSavedMovies(result);
         const allFilms = localStorage.getItem("allFilms");
+        const savedFilmName = localStorage.getItem("savedFilmName");
+        const savedShortFilm = localStorage.getItem("savedShortFilm");
         if (allFilms) {
-          const likedFilms = JSON.parse(allFilms).map((movie) => {
+          let filmsList = JSON.parse(allFilms).map((movie) => {
             const findMovie = result.find(
               ({ movieId, _id }) => movieId === movie.id
             );
@@ -39,10 +40,14 @@ const Movies = () => {
             }
             return movie;
           });
-          setMovies(likedFilms);
+          filmsList = filterFilmsByName({
+            array: filmsList,
+            filmName: savedFilmName
+          })
+
+          setMovies(filmsList);
         }
-        const savedFilmName = localStorage.getItem("savedFilmName");
-        const savedShortFilm = localStorage.getItem("savedShortFilm");
+
         setValues({
           filmName: savedFilmName || "",
           shortFilm: JSON.parse(savedShortFilm) || false,

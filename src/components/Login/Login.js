@@ -5,6 +5,7 @@ import headerLogo from "../../images/header-logo.svg";
 import Input from "../Input/Input";
 import Button from "../Button/Button";
 import { mainApi } from "../../utils/MainApi";
+import { validateEmail } from "../../utils/validateEmail"
 import "./Login.css";
 
 const Login = ({ setLoggedIn, fetchUser }) => {
@@ -25,10 +26,10 @@ const Login = ({ setLoggedIn, fetchUser }) => {
 
   const { push } = useHistory();
 
-  const changeField = (fieldName) => (e) => {
+  const changeField = (fieldName, fnValidation = () => "") => (e) => {
     setErrors((prev) => ({
       ...prev,
-      [fieldName]: e.target.validationMessage,
+      [fieldName]: e.target.validationMessage || (fnValidation(e.target.value)),
     }));
     setValues((prevState) => ({
       ...prevState,
@@ -63,7 +64,7 @@ const Login = ({ setLoggedIn, fetchUser }) => {
       </div>
       <form onSubmit={onSubmit} className="login__form">
         <Input
-          onChange={changeField("email")}
+          onChange={changeField("email", validateEmail)}
           name={"email"}
           type="email"
           title={"E-mail"}

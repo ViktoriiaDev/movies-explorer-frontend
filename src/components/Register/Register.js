@@ -5,6 +5,8 @@ import Input from "../Input/Input";
 import Button from "../Button/Button";
 import { mainApi } from "../../utils/MainApi";
 import { NotificationContext } from "../../contexts/NotificationContext/NotificationContext";
+import { validateEmail } from "../../utils/validateEmail"
+
 import "./Register.css";
 
 const Register = ({ setLoggedIn, fetchUser }) => {
@@ -27,10 +29,10 @@ const Register = ({ setLoggedIn, fetchUser }) => {
 
   const { push } = useHistory();
 
-  const changeField = (fieldName) => (e) => {
+  const changeField = (fieldName, fnValidation = () => "") => (e) => {
     setErrors((prev) => ({
       ...prev,
-      [fieldName]: e.target.validationMessage,
+      [fieldName]: e.target.validationMessage || (fnValidation(e.target.value)),
     }));
     setValues((prevState) => ({
       ...prevState,
@@ -69,7 +71,7 @@ const Register = ({ setLoggedIn, fetchUser }) => {
           maxLength={30}
         />
         <Input
-          onChange={changeField("email")}
+          onChange={changeField("email", validateEmail)}
           name={"email"}
           type="email"
           title={"E-mail"}
