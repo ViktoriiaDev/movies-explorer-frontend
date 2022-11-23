@@ -6,7 +6,7 @@ import Navigation from "../Navigation/Navigation";
 import Account from "../Account/Account";
 import "./Header.css";
 
-const Header = ({ openMobileNavigation }) => {
+const Header = ({ openMobileNavigation, loggedIn }) => {
   const { pathname } = useLocation();
 
   if (!["/movies", "/saved-movies", "/profile", "/"].includes(pathname)) {
@@ -15,11 +15,11 @@ const Header = ({ openMobileNavigation }) => {
   const isMainPage = "/" === pathname;
 
   return (
-    <header className={`header ${isMainPage ? "" : "header_auth"}`}>
+    <header className={`header ${isMainPage ? "" : "header_logged-in"}`}>
       <Link to={"/"}>
         <img className="header__logo" alt="Логотип" src={headerLogo} />
       </Link>
-      {isMainPage ? (
+      {!loggedIn ? (
         <>
           <Link className="header__signup-link" to={"/signup"}>
             Регистрация
@@ -31,7 +31,7 @@ const Header = ({ openMobileNavigation }) => {
       ) : (
         <>
           <div className="header__desktop">
-            <Navigation />
+            <Navigation loggedIn={loggedIn}/>
             <Account />
           </div>
           <div className="header__mobile">

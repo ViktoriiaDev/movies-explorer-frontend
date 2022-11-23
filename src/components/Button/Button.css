@@ -9,6 +9,20 @@
   font-weight: 500;
   font-size: 14px;
   line-height: 1.2;
+  cursor: pointer;
+}
+
+.button-submit:hover {
+  opacity: .7;
+}
+
+.button-submit_disabled {
+  background-color: #F8F8F8;
+  color: #C2C2C2;
+}
+
+.button-submit_disabled:hover {
+  opacity: 1;
 }
 
 @media screen and (max-width: 480px) {

@@ -1,91 +1,281 @@
-import React from "react";
+import React, { useState, useContext, useEffect } from "react";
 import SearchForm from "../SearchForm/SearchForm";
 import MoviesCardList from "../MoviesCardList/MoviesCardList";
 import MoviesCard from "../MoviesCard/MoviesCard";
 import Preloader from "../Preloader/Preloader";
+import { moviesApi } from "../../utils/MoviesApi";
+import { mainApi } from "../../utils/MainApi";
+import { NotificationContext } from "../../contexts/NotificationContext/NotificationContext";
+import { filterFilmsByName } from "../../utils/filterFilmsByName";
+import { setLikeFilms } from "../../utils/setLikeFilms";
+import { MOBILE_BREAKPOINT, TABLET_BREAKPOINT, MOBILE_DISPLAY_COUNTER, TABLET_DISPLAY_COUNTER, DESKTOP_DISPLAY_COUNTER, TABLET_INCREASE_COUNTER, DESKTOP_INCREASE_COUNTER } from "../../constants/constants";
 import "./Movies.css";
 
 const Movies = () => {
+  const [movies, setMovies] = useState(null);
+  const { handleAddNote } = useContext(NotificationContext);
+  const [isLoading, setLoading] = useState(false);
+  const [values, setValues] = useState(null);
+  const [isError, setError] = useState(false);
+  const [displayCounter, setDisplayCounter] = useState(0);
+  const [increase, setIncrease] = useState(0);
+  const [savedMovies, setSavedMovies] = useState([]);
+
+  useEffect(() => {
+    mainApi
+      .getSavedMovies()
+      .then((result) => {
+        setSavedMovies(result);
+        const allFilms = localStorage.getItem("allFilms");
+        const savedFilmName = localStorage.getItem("savedFilmName");
+        const savedShortFilm = localStorage.getItem("savedShortFilm");
+        if (allFilms) {
+          let filmsList = JSON.parse(allFilms).map((movie) => {
+            const findMovie = result.find(
+              ({ movieId, _id }) => movieId === movie.id
+            );
+            if (findMovie) {
+              movie.isSaved = true;
+              movie._id = findMovie._id;
+            }
+            return movie;
+          });
+          filmsList = filterFilmsByName({
+            array: filmsList,
+            filmName: savedFilmName
+          })
+
+          setMovies(filmsList);
+        }
+
+        setValues({
+          filmName: savedFilmName || "",
+          shortFilm: JSON.parse(savedShortFilm) || false,
+        });
+      })
+      .catch((error) => {
+        handleAddNote(error.message);
+        console.log(error);
+      });
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener("resize", resizeMoviesList);
+    resizeMoviesList();
+    return () => {
+      window.removeEventListener("resize", resizeMoviesList);
+    };
+  }, []);
+
+  const resizeMoviesList = () => {
+    const width = window.innerWidth;
+    if (width < TABLET_BREAKPOINT) {
+      setDisplayCounter(TABLET_DISPLAY_COUNTER);
+      setIncrease(TABLET_INCREASE_COUNTER);
+      return;
+    }
+
+    if (width <= MOBILE_BREAKPOINT) {
+      setDisplayCounter(MOBILE_DISPLAY_COUNTER);
+      setIncrease(TABLET_INCREASE_COUNTER);
+      return;
+    }
+
+    setDisplayCounter(DESKTOP_DISPLAY_COUNTER);
+    setIncrease(DESKTOP_INCREASE_COUNTER);
+  };
+
+  const handleMoreClick = () => {
+    setDisplayCounter(displayCounter + increase);
+  };
+
+  const fetchFilms = ({ filmName }) => {
+    if (filmName === "") {
+      handleAddNote("Нужно ввести ключевое слово");
+      return;
+    }
+
+    localStorage.setItem("savedFilmName", filmName);
+
+    const allFilms = localStorage.getItem("allFilms");
+
+    if (allFilms) {
+      const filterFilms = filterFilmsByName({
+        array: JSON.parse(allFilms),
+        filmName: filmName,
+      });
+      const likedFilms = setLikeFilms({
+        filmsArray: filterFilms,
+        likedFilmsArray: savedMovies,
+      });
+      setMovies(likedFilms);
+    } else {
+      setError(false);
+      setLoading(true);
+      moviesApi
+        .getMovies()
+        .then((result) => {
+          localStorage.setItem("allFilms", JSON.stringify(result));
+
+          const filterFilms = filterFilmsByName({
+            array: result,
+            filmName: filmName,
+          });
+
+          const likedFilms = setLikeFilms({
+            filmsArray: filterFilms,
+            likedFilmsArray: savedMovies,
+          });
+          setLoading(false);
+          setMovies(likedFilms);
+        })
+        .catch((error) => {
+          setLoading(false);
+          setMovies(null);
+          setError(true);
+          console.log(error);
+          handleAddNote(error.message);
+        });
+    }
+  };
+
+  const filterCheckBox = (value) => {
+    setValues((prev) => ({
+      ...prev,
+      shortFilm: value,
+    }));
+    localStorage.setItem("savedShortFilm", value);
+  };
+
+  const handleDeleteLike = (movie) => {
+    mainApi
+      .deleteMovie(movie._id)
+      .then(() => {
+        setMovies((prevMovies) =>
+          prevMovies.map((film) =>
+            film._id === movie._id
+              ? {
+                  ...film,
+                  isSaved: false,
+                }
+              : film
+          )
+        );
+      })
+      .catch((error) => {
+        handleAddNote(error.message);
+        console.log(error);
+      });
+  };
+
+  const handleAddMovie = ({
+    country,
+    director,
+    duration,
+    year,
+    description,
+    image,
+    trailerLink,
+    id,
+    nameRU,
+    nameEN,
+  }) => {
+    const movie = {
+      id,
+      country,
+      director,
+      duration,
+      year,
+      description,
+      image: `https://api.nomoreparties.co${image.url}`,
+      trailerLink,
+      thumbnail: `https://api.nomoreparties.co${image.url}`,
+      movieId: id,
+      nameRU,
+      nameEN,
+    };
+    mainApi
+      .addMovie(movie)
+      .then((saved) => {
+        setMovies((prevMovies) =>
+          prevMovies.map((item) =>
+            item.id === movie.movieId
+              ? {
+                  ...item,
+                  isSaved: true,
+                  _id: saved._id,
+                }
+              : item
+          )
+        );
+      })
+      .catch((error) => {
+        handleAddNote(error.message);
+        console.log(error);
+      });
+  };
+
+  const resultFilms = movies && movies.filter((film) =>
+    values.shortFilm ? film.duration <= 40 : film
+  );
+
   return (
     <div className="movies">
-      <SearchForm />
+      {values && (
+        <SearchForm
+          onSubmit={fetchFilms}
+          values={values}
+          filterCheckBox={filterCheckBox}
+        />
+      )}
       <div className="movies__divider" />
-      {/* <Preloader/> */}
-      <MoviesCardList>
-        <MoviesCard
-          filmName={"33 слова о дизайне"}
-          duration={"1ч42м"}
-          imgUrl={
-            "https://as2.ftcdn.net/v2/jpg/03/39/23/47/1000_F_339234706_21TQjNdxInSbus2yRsH686CATZlTFU17.jpg"
-          }
-          isSaved={false}
-        />
-        <MoviesCard
-          filmName={"33 слова о дизайне"}
-          duration={"1ч42м"}
-          imgUrl={
-            "https://t4.ftcdn.net/jpg/03/78/82/67/240_F_378826792_Al5LMh7Zi2nbxgTQv5kZad8rZiTeW1gW.jpg"
-          }
-          isSaved={true}
-        />
-        <MoviesCard
-          filmName={"33 слова о дизайне"}
-          duration={"1ч42м"}
-          imgUrl={
-            "https://t4.ftcdn.net/jpg/04/09/02/35/240_F_409023585_FxHsCOoj3X6hg2Z9qyBwGdHzlaW7eMyk.jpg"
-          }
-          isSaved={false}
-        />
-        <MoviesCard
-          filmName={"33 слова о дизайне"}
-          duration={"1ч42м"}
-          imgUrl={
-            "https://t4.ftcdn.net/jpg/02/93/15/99/240_F_293159971_wzSIU0gwzBtmRCwZzSzudQ9wuCG1UxzH.jpg"
-          }
-          isSaved={false}
-        />
-        <MoviesCard
-          filmName={"33 слова о дизайне"}
-          duration={"1ч42м"}
-          imgUrl={
-            "https://t3.ftcdn.net/jpg/04/77/31/12/240_F_477311239_KUjgs0zlrL9ilCpCkPo2fYZB9AehFF48.jpg"
-          }
-          isSaved={true}
-        />
-        <MoviesCard
-          filmName={"33 слова о дизайне"}
-          duration={"1ч42м"}
-          imgUrl={
-            "https://t3.ftcdn.net/jpg/03/40/12/74/240_F_340127448_gfQYP5nCoaEIRsrMxqA98SZoOPjP7DHe.jpg"
-          }
-          isSaved={false}
-        />
-        <MoviesCard
-          filmName={"33 слова о дизайне"}
-          duration={"1ч42м"}
-          imgUrl={
-            "https://t4.ftcdn.net/jpg/02/67/68/45/240_F_267684533_G7THd7vyInpTBpuTfydTpuZD05kLowJv.jpg"
-          }
-          isSaved={false}
-        />
-        <MoviesCard
-          filmName={"33 слова о дизайне"}
-          duration={"1ч42м"}
-          imgUrl={
-            "https://t3.ftcdn.net/jpg/04/02/19/28/240_F_402192887_UeLVHA5bc6tlK0B3TSKeDGw7sWHsECjY.jpg"
-          }
-          isSaved={true}
-        />
-        <MoviesCard
-          filmName={"33 слова о дизайне"}
-          duration={"1ч42м"}
-          imgUrl={
-            "https://t3.ftcdn.net/jpg/03/04/47/82/240_F_304478259_mXWEe8n6Okd5uVjNZZRq4e3w2UfQqnLS.jpg"
-          }
-          isSaved={false}
-        />
-      </MoviesCardList>
-      <button className="movies__button-more" type="button">Ещё</button>
+      {isLoading ? (
+        <Preloader />
+      ) : (
+        <>
+          {movies && movies.length > 0 && (
+            <MoviesCardList>
+              {resultFilms.slice(0, displayCounter).map((movie) => {
+                return (
+                  <MoviesCard
+                    trailerLink={movie.trailerLink}
+                    key={movie.id}
+                    filmName={movie.nameRU}
+                    duration={movie.duration}
+                    imgUrl={`https://api.nomoreparties.co${movie.image.url}`}
+                    isSaved={movie.isSaved}
+                    handleAddMovie={() => handleAddMovie(movie)}
+                    handleDeleteLike={() => handleDeleteLike(movie)}
+                  />
+                );
+              })}
+            </MoviesCardList>
+          )}
+          {resultFilms && resultFilms.length === 0 && (
+            <>
+              <div className="movies__not-found-error">Ничего не найдено</div>
+            </>
+          )}
+          {isError && (
+            <>
+              <div className="movies__responce-error">
+                Во время запроса произошла ошибка. Возможно, проблема с
+                соединением или сервер недоступен. Подождите немного и
+                попробуйте ещё раз.
+              </div>
+            </>
+          )}
+          {resultFilms && displayCounter < resultFilms.length && (
+            <button
+              onClick={handleMoreClick}
+              className="movies__button-more"
+              type="button"
+            >
+              Ещё
+            </button>
+          )}
+        </>
+      )}
     </div>
   );
 };

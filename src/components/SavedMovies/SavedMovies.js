@@ -1,44 +1,94 @@
-import React from "react";
+import React, { useState, useContext } from "react";
 import SearchForm from "../SearchForm/SearchForm";
 import MoviesCardList from "../MoviesCardList/MoviesCardList";
 import MoviesCard from "../MoviesCard/MoviesCard";
+import { mainApi } from "../../utils/MainApi";
+import { NotificationContext } from "../../contexts/NotificationContext/NotificationContext";
 import "./SavedMovies.css";
+import Preloader from "../Preloader/Preloader";
+import { filterFilmsByName } from "../../utils/filterFilmsByName";
 
 const SavedMovies = () => {
+  const [savedMovies, setSavedMovies] = useState([]);
+  const { handleAddNote } = useContext(NotificationContext);
+  const [isShort, filterCheckBox] = useState(false);
+  const [isError, setError] = useState(false);
+  const [isLoading, setLoading] = useState(false);
+
+  React.useEffect(() => {
+    setLoading(true);
+    mainApi
+      .getSavedMovies()
+      .then((result) => {
+        setLoading(false);
+        setSavedMovies(result);
+      })
+      .catch((error) => {
+        setLoading(false);
+        handleAddNote(error.message);
+        console.log(error);
+      });
+  }, []);
+
+  const handleDeleteMovie = (savedMovie) => {
+    mainApi
+      .deleteMovie(savedMovie._id)
+      .then(() => {
+        setSavedMovies((prevSavedMovies) =>
+          prevSavedMovies.filter((movie) => movie._id !== savedMovie._id)
+        );
+      })
+      .catch((error) => {
+        handleAddNote(error.message);
+        console.log(error);
+      });
+  };
+
+  const searchFilms = ({ filmName }) => {
+    if (filmName === "") {
+      handleAddNote("Нужно ввести ключевое слово");
+      return;
+    }
+    setError(false);
+    const nameFilms = filterFilmsByName({
+      array: savedMovies,
+      filmName: filmName,
+    });
+    setSavedMovies(nameFilms);
+  };
+
+  const resultFilms = savedMovies.filter((film) =>
+    isShort ? film.duration <= 40 : film
+  );
+
   return (
     <div className="saved-movies">
-      <SearchForm />
+      <SearchForm
+        onSubmit={searchFilms}
+        filterCheckBox={filterCheckBox}
+      />
       <div className="movies__divider" />
-      {/* <Preloader/> */}
-      <MoviesCardList>
-        <MoviesCard
-          filmName={"33 слова о дизайне"}
-          duration={"1ч42м"}
-          imgUrl={
-            "https://t4.ftcdn.net/jpg/03/78/82/67/240_F_378826792_Al5LMh7Zi2nbxgTQv5kZad8rZiTeW1gW.jpg"
-          }
-          isSaved={true}
-          isDisplayDeleteButton={true}
-        />
-        <MoviesCard
-          filmName={"33 слова о дизайне"}
-          duration={"1ч42м"}
-          imgUrl={
-            "https://t3.ftcdn.net/jpg/04/77/31/12/240_F_477311239_KUjgs0zlrL9ilCpCkPo2fYZB9AehFF48.jpg"
-          }
-          isSaved={true}
-          isDisplayDeleteButton={true}
-        />
-        <MoviesCard
-          filmName={"33 слова о дизайне"}
-          duration={"1ч42м"}
-          imgUrl={
-            "https://t3.ftcdn.net/jpg/04/02/19/28/240_F_402192887_UeLVHA5bc6tlK0B3TSKeDGw7sWHsECjY.jpg"
-          }
-          isSaved={true}
-          isDisplayDeleteButton={true}
-        />
-      </MoviesCardList>
+      {isLoading ? (
+        <Preloader />
+      ) : (
+        <>
+          <MoviesCardList>
+            {resultFilms.map((savedMovie) => {
+              return (
+                <MoviesCard
+                  trailerLink={savedMovie.trailerLink}
+                  key={savedMovie._id}
+                  filmName={savedMovie.nameRU}
+                  duration={savedMovie.duration}
+                  imgUrl={savedMovie.image}
+                  isDisplayDeleteButton={true}
+                  handleDeleteMovie={() => handleDeleteMovie(savedMovie)}
+                />
+              );
+            })}
+          </MoviesCardList>
+        </>
+      )}
     </div>
   );
 };

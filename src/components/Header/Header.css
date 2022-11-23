@@ -49,13 +49,21 @@
   padding: 0;
 }
 
-.header_auth {
+.header__menu-mobile:hover {
+  opacity: .7;
+}
+
+.header_logged-in {
   background-color: #fff;
 }
 
 .header__logo {
   height: 38px;
   width: 38px;
+}
+
+.header__logo:hover {
+  opacity: .7;
 }
 
 .header__signup-link {

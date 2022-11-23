@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import "./FilterCheckbox.css";
 
-const FilterCheckbox = () => {
-  const [isActive, setIsActive] = useState(false);
+const FilterCheckbox = ({onChange, initValue}) => {
+  const [isActive, setIsActive] = useState(initValue || false);
 
   const toggleActive = () => {
     setIsActive(!isActive);
+    onChange(!isActive)
   };
 
   const checkboxClass = `checkbox__toggler ${

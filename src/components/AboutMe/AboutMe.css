@@ -147,6 +147,10 @@
   color: #000;
 }
 
+.about-me__info-link:hover {
+  opacity: .7;
+}
+
 @media screen and (max-width: 768px) {
   .about-me__info-link {
     margin-top: 87px;
