@@ -42,7 +42,6 @@ const App = () => {
         console.log(error);
         setLoggedIn(false);
         localStorage.removeItem("jwt");
-        push("/signin");
       })
       .finally(() => {
         setLoading(false);
