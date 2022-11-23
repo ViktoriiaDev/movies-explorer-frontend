@@ -1,0 +1,14 @@
+export const MOBILE_BREAKPOINT = 480;
+
+export const TABLET_BREAKPOINT = 769;
+
+export const MOBILE_DISPLAY_COUNTER = 5;
+
+export const TABLET_DISPLAY_COUNTER = 8;
+
+export const DESKTOP_DISPLAY_COUNTER = 12;
+
+export const TABLET_INCREASE_COUNTER = 2;
+
+export const DESKTOP_INCREASE_COUNTER = 4;
+

@@ -8,7 +8,7 @@ import { mainApi } from "../../utils/MainApi";
 import { NotificationContext } from "../../contexts/NotificationContext/NotificationContext";
 import { filterFilmsByName } from "../../utils/filterFilmsByName";
 import { setLikeFilms } from "../../utils/setLikeFilms";
-
+import { MOBILE_BREAKPOINT, TABLET_BREAKPOINT, MOBILE_DISPLAY_COUNTER, TABLET_DISPLAY_COUNTER, DESKTOP_DISPLAY_COUNTER, TABLET_INCREASE_COUNTER, DESKTOP_INCREASE_COUNTER } from "../../constants/constants";
 import "./Movies.css";
 
 const Movies = () => {
@@ -69,20 +69,20 @@ const Movies = () => {
 
   const resizeMoviesList = () => {
     const width = window.innerWidth;
-    if (width < 769) {
-      setDisplayCounter(8);
-      setIncrease(2);
+    if (width < TABLET_BREAKPOINT) {
+      setDisplayCounter(TABLET_DISPLAY_COUNTER);
+      setIncrease(TABLET_INCREASE_COUNTER);
       return;
     }
 
-    if (width <= 480) {
-      setDisplayCounter(5);
-      setIncrease(2);
+    if (width <= MOBILE_BREAKPOINT) {
+      setDisplayCounter(MOBILE_DISPLAY_COUNTER);
+      setIncrease(TABLET_INCREASE_COUNTER);
       return;
     }
 
-    setDisplayCounter(12);
-    setIncrease(4);
+    setDisplayCounter(DESKTOP_DISPLAY_COUNTER);
+    setIncrease(DESKTOP_INCREASE_COUNTER);
   };
 
   const handleMoreClick = () => {
