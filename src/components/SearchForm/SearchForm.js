@@ -1,13 +1,46 @@
-import React from "react";
+import React, { useState } from "react";
 import FilterCheckbox from "../FilterCheckbox/FilterCheckbox";
 import searchIcon from "../../images/search-icon.svg";
 import "./SearchForm.css";
 
-const SearchForm = () => {
+const SearchForm = ({ onSubmit, values: initValues, filterCheckBox }) => {
+  const [values, setValues] = useState(
+    initValues || {
+      filmName: "",
+      shortFilm: false,
+    }
+  );
+
+  const changeField = (fieldName) => (e) => {
+    setValues((prevState) => ({
+      ...prevState,
+      [fieldName]: e.target.value,
+    }));
+  };
+
+  const changeCheckbox = (value) => {
+    setValues((prevState) => ({
+      ...prevState,
+      shortFilm: value,
+    }));
+    filterCheckBox(value)
+  };
+
+  const hamdleSubmitForm = (e) => {
+    e.preventDefault();
+    onSubmit(values);
+  };
+
   return (
     <>
-      <form className="search-form">
-        <input className="search-form__input" placeholder="Фильм" required />
+      <form className="search-form" onSubmit={hamdleSubmitForm}>
+        <input
+          onChange={changeField("filmName")}
+          value={values.filmName}
+          name={"filmName"}
+          className="search-form__input"
+          placeholder="Фильм"
+        />
         <button className="search-form__button" type="submit">
           <img
             className="search-form__button-icon"
@@ -16,7 +49,7 @@ const SearchForm = () => {
           />
         </button>
       </form>
-      <FilterCheckbox />
+      <FilterCheckbox onChange={changeCheckbox} initValue={values.shortFilm}/>
     </>
   );
 };

@@ -18,6 +18,11 @@
   object-fit: cover;
 }
 
+.movies-card__image:hover {
+  opacity: .7;
+  object-fit: cover;
+}
+
 .movies-card__info {
   display: flex;
   justify-content: space-between;

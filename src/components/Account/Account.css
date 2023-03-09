@@ -18,6 +18,10 @@
   box-sizing: border-box;
 }
 
+.account__profile-link:hover {
+  opacity: .7;
+}
+
 .account__profile-icon {
   padding: 7px;
   background: #F9F9F9;

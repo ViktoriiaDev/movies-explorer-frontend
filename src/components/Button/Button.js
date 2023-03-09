@@ -1,11 +1,14 @@
 import React from "react";
-import { Children } from "react";
 import "./Button.css";
 
-const Button = ({ children }) => {
+const Button = ({ children, disabled }) => {
   return (
     <>
-      <button className="button-submit" type="submit">
+      <button
+        className={`button-submit ${disabled ? "button-submit_disabled" : ""}`}
+        type="submit"
+        disabled={disabled}
+      >
         {children}
       </button>
     </>
